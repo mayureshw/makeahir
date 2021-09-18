@@ -4,7 +4,7 @@ Here are a few utilities to work with the AHIR framework, which is available at:
 
 https://github.com/madhavPdesai/ahir
 
-1. Syntax highlighters for the Aa and the vC languages for the vim editor
+## Syntax highlighters for the Aa and the vC languages for the vim editor
 
     - For individual login based installation drop the aa.vim and vc.vim files into $HOME/.vim/syntax/. (You may want to clone this repository and just soft link these two files into the said directory. This way they can be kept up to date by just running git pull.)
 
@@ -15,6 +15,6 @@ https://github.com/madhavPdesai/ahir
     - au BufNewFile,BufRead *.aa     setf aa
     - au BufNewFile,BufRead *.vc     setf vc
 
-2. Makefile for building and simulating Aa / vC code
+## Makefile for building and simulating Aa / vC code
 
     - To be added soon
