@@ -14,7 +14,7 @@ TESTBENCHHW = testbench_hw
 TESTBENCHTOP = ahir_system
 TESTBENCHSYS = $(TESTBENCHTOP)_test_bench
 VCSRCS = $(AASRCS:.aa=.vc)
-VHDLFILE = $(TOP).vhdl
+VHDLFILE = $(AASRCS:.aa=.vhdl)
 WORKOBJ = work-obj93.cf
 VHDLSTUBCFILE = vhdlCStubs.c
 VHDLSTUBOFILE = $(OBJDIR)/$(VHDLSTUBCFILE:.c=.o)
