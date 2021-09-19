@@ -1,0 +1,99 @@
+AHIR_INCLUDEDIR = $(AHIR_RELEASE)/include
+AHIR_LIBDIR = $(AHIR_RELEASE)/lib
+AHIR_LIBS = GhdlLink ahir aHiR_ieee_proposed
+AHIR_LIBWORKOBJS = $(addsuffix -obj93.cf,$(AHIR_LIBS))
+VHDL_LIB = $(AHIR_RELEASE)/vhdl
+FUNCTIONLIB = $(AHIR_RELEASE)/functionLibrary/
+AACFILE = aa_c_model.c
+AAGENFILES = $(AACFILE) aa_c_model_internal.h aa_c_model.h
+AAOFILE = $(OBJDIR)/$(AACFILE:.c=.o)
+COMCFLAGS = -c -I $(AHIR_INCLUDEDIR) -I. $(EXTRACFLAGS)
+TBENCHOBJS = $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(TBENCHSRCS))))
+TESTBENCHSW = testbench_sw
+TESTBENCHHW = testbench_hw
+TESTBENCHSYS = $(TOP)_test_bench
+VCSRCS = $(AASRCS:.aa=.vc)
+VHDLFILE = $(TOP).vhdl
+WORKOBJ = work-obj93.cf
+VHDLSTUBCFILE = vhdlCStubs.c
+VHDLSTUBOFILE = $(OBJDIR)/$(VHDLSTUBCFILE:.c=.o)
+
+# What changed from the sample commands in examples (user can of course add some in VC2VHDLOPTS)
+# -I 2 dropped as it says deprecated
+# -v (verbose) dropped
+# -e dropped
+# -w dropped, rediretecd all vhdls to $(TOP).vhdl
+_VC2VHDLOPTS = -O -S 4 -a -C -s ghdl $(TOPMODULES) -L $(FUNCTIONLIB) $(VC2VHDLOPTS)
+
+# Target specific variables (Unfortunately they do not work with pattern rules.
+# We use recursive invocation for that)
+sw: CFLAGS = $(COMCFLAGS) -DSW
+sw: OBJDIR = swobj
+sw: LDFLAGS = -lBitVectors -lSockPipes -lPipeHandler -L $(AHIR_LIBDIR) -lpthread
+hw: CFLAGS = $(COMCFLAGS)
+hw: OBJDIR = hwobj
+hw: LDFLAGS = -lSocketLibPipeHandler -L $(AHIR_LIBDIR) -lpthread
+
+# For cleaning
+OBJDIRS = swobj hwobj
+CLEANUPFILES =  $(TESTBENCHSW) $(TESTBENCHHW) $(AACFILE) $(VCSRCS) $(VHDLFILE) $(VHDLSTUBCFILE) $(addsuffix /*.o,$(OBJDIRS)) aa_c_model_internal.h aa_c_model.h vhdlCStubs.h *-obj93.cf
+
+all:
+	@echo "Please invoke with specific targets"
+	@echo "  sw : Build Aa 2 C test bench"
+	@echo "  aa2vc : Just build vc files for AASRCS"
+	@echo "  hw : Build vhdl test bench"
+	@echo "  clean : Clean generated files"
+
+sw:
+	make CFLAGS="$(CFLAGS)" OBJDIR=$(OBJDIR) LDFLAGS="$(LDFLAGS)" _sw
+
+hw:
+	make CFLAGS="$(CFLAGS)" OBJDIR=$(OBJDIR) LDFLAGS="$(LDFLAGS)" _hw
+
+_sw: $(TESTBENCHSW)
+
+clean:
+	rm -f $(CLEANUPFILES)
+	ghdl --clean
+
+$(TESTBENCHSW) : $(AAOFILE) $(TBENCHOBJS)
+	cc $^ $(LDFLAGS) -o $@
+
+$(AACFILE): $(AASRCS)
+	Aa2C -T $(TOP) $(AA2COPTS) $<
+
+aa2vc: $(VCSRCS)
+
+_hw: $(TESTBENCHHW) $(TESTBENCHSYS)
+
+$(TESTBENCHSYS): $(AHIR_LIBWORKOBJS) $(WORKOBJ)
+	ghdl -m -Wl,-L$(AHIR_LIB) -Wl,-lVhpi $@
+
+$(TESTBENCHHW): $(VHDLSTUBOFILE) $(TBENCHOBJS)
+	cc $^ $(LDFLAGS) -o $@
+
+$(VHDLSTUBOFILE): $(VHDLSTUBCFILE)
+
+$(VHDLSTUBCFILE): aa2vc
+
+$(WORKOBJ): $(VHDLFILE)
+	ghdl -i $<
+
+# Unfortunately ghdl changes the case of output filename and it requires it to be like that
+# We have to maintain a placeholder file with original case
+%-obj93.cf: $(VHDL_LIB)/%.vhdl
+	ghdl -i --work=$* $<
+	touch $@
+
+%.vc: %.aa
+	Aa2VC $(AA2VCOPTS) -C $< | vcFormat > $@
+
+$(OBJDIR)/%.o: %.c
+	mkdir -p $(OBJDIR) && cc $(CFLAGS) $< -o $@
+
+$(OBJDIR)/%.o: %.cpp
+	mkdir -p $(OBJDIR) && c++ $(CFLAGS) $< -o $@
+
+%.vhdl: %.vc
+	vc2vhdl $(_VC2VHDLOPTS) -f $< | vhdlFormat > $@

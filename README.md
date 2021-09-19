@@ -17,4 +17,19 @@ https://github.com/madhavPdesai/ahir
 
 ## Makefile for building and simulating Aa / vC code
 
- - To be added soon
+    1. Define following variables in your Makefile
+        - AASRCS = list of .aa source files
+        - TOP = name of the top module
+        - TBENCHSRCS = list of .c or .cpp files, typically testbench.c
+
+    2. Following variables are optional
+        - EXTRACFLAGS = default AHIR include/lib paths are not needed
+        - AA2COPTS (-T is not required to be specified)
+        - AA2VCOPTS (-C is done by default, not required to be specified)
+        - VC2VHDLOPTS (see defaults in %.vhdl pattern rule, those are not required to be specified)
+
+    3. At the end of your makefile include the generic makefile, e.g. as follows (replace MAKEAHIR with suitable path based on where you have checked it out)
+        - include $(MAKEAHIR)/Makefile.ahir
+
+    4. Make targets:
+        - Type make to see them all or see code under target all
