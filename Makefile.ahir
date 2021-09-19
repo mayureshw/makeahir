@@ -69,7 +69,7 @@ aa2vc: $(VCSRCS)
 _hw: $(TESTBENCHHW) $(TESTBENCHSYS)
 
 $(TESTBENCHSYS): $(AHIR_LIBWORKOBJS) $(WORKOBJ)
-	ghdl -m -Wl,-L$(AHIR_LIB) -Wl,-lVhpi $@
+	ghdl -m -Wl,-L$(AHIR_LIBDIR) -Wl,-lVhpi $@
 
 $(TESTBENCHHW): $(VHDLSTUBOFILE) $(TBENCHOBJS)
 	cc $^ $(LDFLAGS) -o $@
