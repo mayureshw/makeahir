@@ -97,6 +97,7 @@ $(OBJDIR)/%.o: %.c
 $(OBJDIR)/%.o: %.cpp
 	mkdir -p $(OBJDIR) && c++ $(CFLAGS) $< -o $@
 
+# Mind the sequence when formatting, else it doesn't work, would be nice if vc2vhdl produces a single file
 %.vhdl: %.vc
 	vc2vhdl $(_VC2VHDLOPTS) -f $<
-	cat $(TESTBENCHTOP)*.unformatted_vhdl | vhdlFormat > $@
+	cat $(TESTBENCHTOP)_global_package.unformatted_vhdl $(TESTBENCHTOP).unformatted_vhdl $(TESTBENCHTOP)_test_bench.unformatted_vhdl | vhdlFormat > $@
