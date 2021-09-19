@@ -11,7 +11,8 @@ COMCFLAGS = -c -I $(AHIR_INCLUDEDIR) -I. $(EXTRACFLAGS)
 TBENCHOBJS = $(addprefix $(OBJDIR)/,$(addsuffix .o,$(basename $(TBENCHSRCS))))
 TESTBENCHSW = testbench_sw
 TESTBENCHHW = testbench_hw
-TESTBENCHSYS = $(TOP)_test_bench
+TESTBENCHTOP = ahir_system
+TESTBENCHSYS = $(TESTBENCHTOP)_test_bench
 VCSRCS = $(AASRCS:.aa=.vc)
 VHDLFILE = $(TOP).vhdl
 WORKOBJ = work-obj93.cf
@@ -21,9 +22,9 @@ VHDLSTUBOFILE = $(OBJDIR)/$(VHDLSTUBCFILE:.c=.o)
 # What changed from the sample commands in examples (user can of course add some in VC2VHDLOPTS)
 # -I 2 dropped as it says deprecated
 # -v (verbose) dropped
-# -e dropped
-# -w dropped, rediretecd all vhdls to $(TOP).vhdl
-_VC2VHDLOPTS = -O -S 4 -a -C -s ghdl $(TOPMODULES) -L $(FUNCTIONLIB) $(VC2VHDLOPTS)
+# -e should not be ideally needed, kept for familiarity
+# -w should not be ideally needed, but without it the packages aren't getting generated
+_VC2VHDLOPTS = -O -S 4 -a -C -e $(TESTBENCHTOP) -w -s ghdl $(TOPMODULES) -L $(FUNCTIONLIB) $(VC2VHDLOPTS)
 
 # Target specific variables (Unfortunately they do not work with pattern rules.
 # We use recursive invocation for that)
@@ -36,7 +37,7 @@ hw: LDFLAGS = -lSocketLibPipeHandler -L $(AHIR_LIBDIR) -lpthread
 
 # For cleaning
 OBJDIRS = swobj hwobj
-CLEANUPFILES =  $(TESTBENCHSW) $(TESTBENCHHW) $(AACFILE) $(VCSRCS) $(VHDLFILE) $(VHDLSTUBCFILE) $(addsuffix /*.o,$(OBJDIRS)) aa_c_model_internal.h aa_c_model.h vhdlCStubs.h *-obj93.cf
+CLEANUPFILES =  $(TESTBENCHSW) $(TESTBENCHHW) $(AACFILE) $(VCSRCS) $(VHDLFILE) $(VHDLSTUBCFILE) $(addsuffix /*.o,$(OBJDIRS)) aa_c_model_internal.h aa_c_model.h vhdlCStubs.h *-obj93.cf $(TESTBENCHTOP)*.unformatted_vhdl
 
 all:
 	@echo "Please invoke with specific targets"
@@ -96,4 +97,5 @@ $(OBJDIR)/%.o: %.cpp
 	mkdir -p $(OBJDIR) && c++ $(CFLAGS) $< -o $@
 
 %.vhdl: %.vc
-	vc2vhdl $(_VC2VHDLOPTS) -f $< | vhdlFormat > $@
+	vc2vhdl $(_VC2VHDLOPTS) -f $<
+	cat $(TESTBENCHTOP)*.unformatted_vhdl | vhdlFormat > $@
