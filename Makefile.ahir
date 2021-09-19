@@ -3,7 +3,7 @@ AHIR_LIBDIR = $(AHIR_RELEASE)/lib
 AHIR_LIBS = GhdlLink ahir aHiR_ieee_proposed
 AHIR_LIBWORKOBJS = $(addsuffix -obj93.cf,$(AHIR_LIBS))
 VHDL_LIB = $(AHIR_RELEASE)/vhdl
-FUNCTIONLIB = $(AHIR_RELEASE)/functionLibrary/
+FPULIB = $(AHIR_RELEASE)/functionLibrary/fpu.list
 AACFILE = aa_c_model.c
 AAGENFILES = $(AACFILE) aa_c_model_internal.h aa_c_model.h
 AAOFILE = $(OBJDIR)/$(AACFILE:.c=.o)
@@ -19,12 +19,13 @@ WORKOBJ = work-obj93.cf
 VHDLSTUBCFILE = vhdlCStubs.c
 VHDLSTUBOFILE = $(OBJDIR)/$(VHDLSTUBCFILE:.c=.o)
 
-# What changed from the sample commands in examples (user can of course add some in VC2VHDLOPTS)
-# -I 2 dropped as it says deprecated
-# -v (verbose) dropped
-# -e should not be ideally needed, kept for familiarity
+# What should change from the sample commands in example makefiles
+# To avoid issues due to mismatching flags, these are kept as per example makefiles
+# -I 2 shouldn't be needed as it says deprecated
+# -v (verbose) not needed
+# -e should not be ideally needed
 # -w should not be ideally needed, but without it the packages aren't getting generated
-_VC2VHDLOPTS = -O -S 4 -a -C -e $(TESTBENCHTOP) -w -s ghdl $(TOPMODULES) -L $(FUNCTIONLIB) $(VC2VHDLOPTS)
+_VC2VHDLOPTS = -O -S 4 -I 2 -v -a -C -e $(TESTBENCHTOP) -w -s ghdl -T $(TOP) -L $(FPULIB) $(VC2VHDLOPTS)
 
 # Target specific variables (Unfortunately they do not work with pattern rules.
 # We use recursive invocation for that)
@@ -62,7 +63,7 @@ $(TESTBENCHSW) : $(AAOFILE) $(TBENCHOBJS)
 	cc $^ $(LDFLAGS) -o $@
 
 $(AACFILE): $(AASRCS)
-	Aa2C -T $(TOP) $(AA2COPTS) $<
+	Aa2C -O -T $(TOP) $(AA2COPTS) $<
 
 aa2vc: $(VCSRCS)
 
@@ -88,7 +89,7 @@ $(WORKOBJ): $(VHDLFILE)
 	touch $@
 
 %.vc: %.aa
-	Aa2VC $(AA2VCOPTS) -C $< | vcFormat > $@
+	Aa2VC -O $(AA2VCOPTS) -C $< | vcFormat > $@
 
 $(OBJDIR)/%.o: %.c
 	mkdir -p $(OBJDIR) && cc $(CFLAGS) $< -o $@

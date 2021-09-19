@@ -24,9 +24,9 @@ https://github.com/madhavPdesai/ahir
 
     2. Following variables are optional
         - EXTRACFLAGS = default AHIR include/lib paths are not needed
-        - AA2COPTS (-T is not required to be specified)
-        - AA2VCOPTS (-C is done by default, not required to be specified)
-        - VC2VHDLOPTS (see defaults in %.vhdl pattern rule, those are not required to be specified)
+        - AA2COPTS (Check Aa2C command in Makefile.ahir for already specified options)
+        - AA2VCOPTS (Check Aa2VC command in Makefile.ahir for already specified options)
+        - VC2VHDLOPTS (Check vc2vhdl command in Makefile.ahir for already specified options)
 
     3. At the end of your makefile include the generic makefile, e.g. as follows (replace MAKEAHIR with suitable path based on where you have checked it out)
         - include $(MAKEAHIR)/Makefile.ahir
