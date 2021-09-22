@@ -63,7 +63,7 @@ $(TESTBENCHSW) : $(AAOFILE) $(TBENCHOBJS)
 	cc $^ $(LDFLAGS) -o $@
 
 $(AACFILE): $(AASRCS)
-	Aa2C -O -T $(TOP) $(AA2COPTS) $<
+	Aa2C -T $(TOP) $(AA2COPTS) $<
 
 aa2vc: $(VCSRCS)
 
