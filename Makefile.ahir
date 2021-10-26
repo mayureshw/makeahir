@@ -18,6 +18,7 @@ VHDLFILE = $(AASRCS:.aa=.vhdl)
 WORKOBJ = work-obj93.cf
 VHDLSTUBCFILE = vhdlCStubs.c
 VHDLSTUBOFILE = $(OBJDIR)/$(VHDLSTUBCFILE:.c=.o)
+TTOP=$(addprefix -T ,$(TOP))
 
 # What should change from the sample commands in example makefiles
 # To avoid issues due to mismatching flags, these are kept as per example makefiles
@@ -25,7 +26,7 @@ VHDLSTUBOFILE = $(OBJDIR)/$(VHDLSTUBCFILE:.c=.o)
 # -v (verbose) not needed
 # -e should not be ideally needed
 # -w should not be ideally needed, but without it the packages aren't getting generated
-_VC2VHDLOPTS = -O -S 4 -I 2 -v -a -C -e $(TESTBENCHTOP) -w -s ghdl -T $(TOP) -L $(FPULIB) $(VC2VHDLOPTS)
+_VC2VHDLOPTS = -O -S 4 -I 2 -v -a -C -e $(TESTBENCHTOP) -w -s ghdl $(TTOP) -L $(FPULIB) $(VC2VHDLOPTS)
 
 # Target specific variables (Unfortunately they do not work with pattern rules.
 # We use recursive invocation for that)
@@ -63,7 +64,7 @@ $(TESTBENCHSW) : $(AAOFILE) $(TBENCHOBJS)
 	cc $^ $(LDFLAGS) -o $@
 
 $(AACFILE): $(AASRCS)
-	Aa2C -T $(TOP) $(AA2COPTS) $<
+	Aa2C $(TTOP) $(AA2COPTS) $<
 
 aa2vc: $(VCSRCS)
 
