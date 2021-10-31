@@ -39,7 +39,7 @@ hw: LDFLAGS = -lSocketLibPipeHandler -L $(AHIR_LIBDIR) -lpthread
 
 # For cleaning
 OBJDIRS = swobj hwobj
-CLEANUPFILES =  $(TESTBENCHSW) $(TESTBENCHHW) $(AACFILE) $(VCSRCS) $(VHDLFILE) $(VHDLSTUBCFILE) $(addsuffix /*.o,$(OBJDIRS)) aa_c_model_internal.h aa_c_model.h vhdlCStubs.h *-obj93.cf $(TESTBENCHTOP)*.unformatted_vhdl vhpi.log
+CLEANUPFILES =  $(TESTBENCHSW) $(TESTBENCHHW) $(AACFILE) $(VCSRCS) $(VHDLFILE) $(VHDLSTUBCFILE) $(addsuffix /*.o,$(OBJDIRS)) aa_c_model_internal.h aa_c_model.h vhdlCStubs.h *-obj93.cf $(TESTBENCHTOP)*.unformatted_vhdl vhpi.log ahir_system_test_bench
 
 all:
 	@echo "Please invoke with specific targets"
