@@ -102,3 +102,14 @@ $(OBJDIR)/%.o: %.cpp
 %.vhdl: %.vc
 	vc2vhdl $(_VC2VHDLOPTS) -f $<
 	cat $(TESTBENCHTOP)_global_package.unformatted_vhdl $(TESTBENCHTOP).unformatted_vhdl $(TESTBENCHTOP)_test_bench.unformatted_vhdl | vhdlFormat > $@
+
+# ############################################################
+# Additional targets for ghdl using mcode backend (.o is phony for mcode)
+VHDLTBOBJ	=	$(VHDLTB).o
+%.o:	%.vhdl
+	ghdl -a $(GHDLOPTS) $<
+
+ghdl:	$(AHIR_LIBWORKOBJS) $(WORKOBJ)  $(VHDLTBOBJ)
+
+runghdl:
+	ghdl -r $(GHDLOPTS) $(VHDLTB)
