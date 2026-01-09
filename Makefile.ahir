@@ -80,13 +80,13 @@ $(VHDLSTUBOFILE): $(VHDLSTUBCFILE)
 
 $(VHDLSTUBCFILE): aa2vc
 
-$(WORKOBJ): $(VHDLFILE)
-	ghdl -i $<
+$(WORKOBJ): $(VHDLFILE) $(VHDLTB)
+	ghdl -a $(GHDLOPTS) $(VHDLFILE) $(VHDLTB)
 
 # Unfortunately ghdl changes the case of output filename and it requires it to be like that
 # We have to maintain a placeholder file with original case
 %-obj93.cf: $(VHDL_LIB)/%.vhdl
-	ghdl -i --work=$* $<
+	ghdl -a $(GHDLOPTS) --work=$* $<
 	touch $@
 
 %.vc: %.aa
@@ -105,11 +105,9 @@ $(OBJDIR)/%.o: %.cpp
 
 # ############################################################
 # Additional targets for ghdl using mcode backend (.o is phony for mcode)
-VHDLTBOBJ	=	$(VHDLTB).o
-%.o:	%.vhdl
-	ghdl -a $(GHDLOPTS) $<
+ahir-obj93.cf: aHiR_ieee_proposed-obj93.cf
 
-ghdl:	$(AHIR_LIBWORKOBJS) $(WORKOBJ)  $(VHDLTBOBJ)
+ghdl:	$(AHIR_LIBWORKOBJS) $(WORKOBJ)
 
 runghdl:
 	ghdl -r $(GHDLOPTS) $(VHDLTB)
