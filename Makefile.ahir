@@ -116,7 +116,7 @@ runghdl:
 # ############################################################
 # Targets for synthesis
 AHIR_LIBSRCS=	$(addprefix $(VHDL_LIB)/, $(addsuffix .vhdl, $(AHIR_LIBS)))
-SYNTHSCRIPT	=	./synth.sh
+SYNTHSCRIPT	=	$(MAKEAHIR)/synth.sh
 SYNTHVFILE	=	$(VHDLTOP).synth.v
 SYNTHSRCS	=	$(VHDLFILE) $(AHIR_LIBSRCS)
 
