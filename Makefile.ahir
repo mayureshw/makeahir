@@ -111,3 +111,22 @@ ghdl:	$(AHIR_LIBWORKOBJS) $(WORKOBJ)
 
 runghdl:
 	ghdl -r $(GHDLOPTS) $(VHDLTB)
+
+
+# ############################################################
+# Targets for synthesis
+AHIR_LIBSRCS=	$(addprefix $(VHDL_LIB)/, $(addsuffix .vhdl, $(AHIR_LIBS)))
+SYNTHSCRIPT	=	./synth.sh
+SYNTHVFILE	=	$(VHDLTOP).synth.v
+SYNTHSRCS	=	$(VHDLFILE) $(AHIR_LIBSRCS)
+
+synth:  $(SYNTHVFILE)
+
+$(SYNTHVFILE):
+	LIBERTYFILE=$(LIBERTYFILE) \
+	GHDLOPTS="$(GHDLOPTS)" \
+	SYNTHSRCS="$(SYNTHSRCS)" \
+	VHDLTOP=$(VHDLTOP) \
+	$(SYNTHSCRIPT)
+
+.PHONY: synth ghdl runghdl
