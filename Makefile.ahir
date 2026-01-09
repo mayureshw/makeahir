@@ -80,8 +80,8 @@ $(VHDLSTUBOFILE): $(VHDLSTUBCFILE)
 
 $(VHDLSTUBCFILE): aa2vc
 
-$(WORKOBJ): $(VHDLFILE) $(VHDLTB)
-	ghdl -a $(GHDLOPTS) $(VHDLFILE) $(VHDLTB)
+$(WORKOBJ): $(VHDLFILE) $(VHDLTB).vhdl
+	ghdl -a $(GHDLOPTS) $(VHDLFILE) $(VHDLTB).vhdl
 
 # Unfortunately ghdl changes the case of output filename and it requires it to be like that
 # We have to maintain a placeholder file with original case
